@@ -33,38 +33,28 @@ local function isPlayerOnMobile()
     return UserInputService.TouchEnabled and not (UserInputService.KeyboardEnabled or UserInputService.GamepadEnabled)
 end
 
-local RayfieldURL = isPlayerOnMobile() and 
-                    'https://raw.githubusercontent.com/Hosvile/Refinement/main/MC%3AArrayfield%20Library' or 
-                    'https://sirius.menu/rayfield'
 
-local Rayfield = loadstring(game:HttpGet(RayfieldURL))()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
-
-local Window = Rayfield:CreateWindow({
-   Name = "Ryzzy Community",
-   LoadingTitle = "Ryzzy Scripts",
-   LoadingSubtitle = "by Rhyan",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = "Ryzzy Scripts",
-      FileName = "Ryzzy Scripts"
-   },
-   Discord = {
-      Enabled = true,
-      Invite = "https://discord.gg/j4HC2epmhP",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Ryzzy Scripts",
-      Subtitle = "Key System",
-      Note = "Junte-se ao discord (https://discord.gg/j4HC2epmhP)",
-      FileName = "Ryzzy Key",
-      SaveKey = true,
-      GrabKeyFromSite = false,
-      Key = "ZDSIOPHJQPIWEUASOPDIJ"
-   }
+local Window = Fluent:CreateWindow({
+    Title = "Fluent " .. Fluent.Version,
+    SubTitle = "by dawid",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
 })
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
 
 local AutoParry = Window:CreateTab("Auto Parry", 13014537525)
 
@@ -248,138 +238,51 @@ local function stopAutoParry()
     isRunning = false
 end
 
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Toggle", Default = false })
 
-local AutoParrySection = AutoParry:CreateSection("Auto Parry")
-
-local AutoParryToggle = AutoParry:CreateToggle({
-    Name = "Auto Parry",
-    CurrentValue = false,
-    Flag = "AutoParryFlag",
-    Callback = function(Value)
-        if Value then
+    Toggle:OnChanged(function()
+    if Value then
             startAutoParry()
             notify("Auto Parry", "Auto Parry has been started", 1)
         else
             stopAutoParry()
             notify("Auto Parry", "Auto Parry has been disabled", 1)
         end
-    end,
+    
+        print("Toggle changed:", Options.MyToggle.Value)
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- InterfaceManager (Allows you to have a interface managment system)
+
+-- Hand the library over to our managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+
+SaveManager:IgnoreThemeSettings()
+
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
 })
 
+SaveManager:LoadAutoloadConfig()
 
-local AutoRagingDeflect = AutoParry:CreateToggle({
-    Name = "Auto Rage Parry/Rapture Parry (DEVE EQUIPAR HABILIDADE ADEQUADA)",
-    CurrentValue = false,
-    Flag = "AutoRagingDeflectFlag",
-    Callback = function(Value)
-        if Value then
-            startAutoParry()
-            UseRage = Value
-            notify("Auto Parry", "Auto Parry com Ability foi iniciado", 1)
-        else
-            stopAutoParry()
-            UseRage = Value
-            notify("Auto Parry", "Auto Parry com Ability foi desativado", 1)
-        end
-    end,
-})
+            
 
-
-
-
-local Configuration = AutoParry:CreateSection("Configuration")
-
-local DistanceSlider = AutoParry:CreateSlider({
-    Name = "Distance Configuration",
-    Range = {0, 100},
-    Increment = 1,
-    Suffix = "Distance",
-    CurrentValue = 20,
-    Flag = "DistanceSlider",
-    Callback = function(Value)
-        sliderValue = Value
-    end,
- })
-
-
-
-
-  
-
-local AutoGGToggle = AutoParry:CreateToggle({
-    Name = "Auto GG",
-    CurrentValue = false,
-    Flag = "AutoGGFlage",
-    Callback = function(Value)
-        return
-    end
-})
-
-local AutoResponseToggle = AutoParry:CreateToggle({
-    Name = "Auto Response",
-    CurrentValue = false,
-    Flag = "AutoResponseFlage",
-    Callback = function(Value)
-        return
-    end
-})
-
-local notifyparriedthing = AutoParry:CreateButton({
-    Name = "Ativar/desativar notificação quando aparado",
-    Callback = function()
-        if not notifyparried == true then
-            notifyparried = true
-            notify("Auto Parry", "Auto Parry Notificar quando o parried foi ativado", 0.7)
-        else
-            notifyparried = false
-            notify("Auto Parry", "Auto Parry Notificar quando o parried for desativado", 0.7)
-        end
-    end,
- })
-
- local ChangeDistanceTo30thing = AutoParry:CreateKeybind({
-    Name = "Distance 30",
-    CurrentKeybind = "V",
-    HoldToInteract = false,
-    Flag = "Distanceto100", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-    Callback = function(Keybind)
- DistanceSlider:Set(30) -- The new slider integer value
- sliderValue = 30
- notify("Range Set", "New Range: " .. sliderValue)
-    end,
- })
- 
- local ChangeDistanceTo100thing = AutoParry:CreateKeybind({
-    Name = "Distance 100",
-    CurrentKeybind = "B",
-    HoldToInteract = false,
-    Flag = "Distanceto100", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-    Callback = function(Keybind)
-     sliderValue = 100
- DistanceSlider:Set(100) -- The new slider integer value
- notify("Range Set", "New Range: " .. sliderValue)
-    end,
- })
-
-workspace:FindFirstChild("Alive").ChildRemoved:Connect(function()
-    if #(workspace.Alive:GetChildren()) <= 1 and AutoGGToggle.CurrentValue and not ggdebounce then
-        ggdebounce = true
-        local randomResponse = math.random(1, #gameEndResponses)
-        wait(math.random(2,3.5))
-        replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(gameEndResponses[randomResponse],"All")
-        task.wait(math.random(1.5,3.3))
-        ggdebounce = false
-    end
-end)
-
-players.PlayerChatted:Connect(function(PlayerChatType,Player,Message)
-    for _,v in pairs(keywords) do
-        if (string.find(Message, v)) and Player ~= localPlayer and AutoResponseToggle.CurrentValue and not responsedebounce then
-            responsedebounce = true
-            local choice = math.random(1, #responses)
-            replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(responses[choice],"All")
-            task.wait(2,5)
-            responsedebounce = false
-        end
-    end
-end)
