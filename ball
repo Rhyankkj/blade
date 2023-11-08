@@ -41,25 +41,25 @@ local Rayfield = loadstring(game:HttpGet(RayfieldURL))()
 
 
 local Window = Rayfield:CreateWindow({
-   Name = "Blade Ball",
-   LoadingTitle = "Allusive Scripts",
-   LoadingSubtitle = "by Burger",
+   Name = "Ryzzy Community",
+   LoadingTitle = "Ryzzy Scripts",
+   LoadingSubtitle = "by Rhyan",
    ConfigurationSaving = {
       Enabled = false,
-      FolderName = "Allusive Scripts",
-      FileName = "Allusive Scripts"
+      FolderName = "Ryzzy Scripts",
+      FileName = "Ryzzy Scripts"
    },
    Discord = {
       Enabled = true,
-      Invite = "zvrK8df8Wj",
+      Invite = "https://discord.gg/j4HC2epmhP",
       RememberJoins = true
    },
    KeySystem = true,
    KeySettings = {
-      Title = "Allusive Scripts",
+      Title = "Ryzzy Scripts",
       Subtitle = "Key System",
-      Note = "Join the discord (discord.gg/zvrK8df8Wj)",
-      FileName = "AllusiveKey",
+      Note = "Junte-se ao discord (https://discord.gg/j4HC2epmhP)",
+      FileName = "Ryzzy Key",
       SaveKey = true,
       GrabKeyFromSite = false,
       Key = "ZDSIOPHJQPIWEUASOPDIJ"
@@ -147,8 +147,8 @@ end
 
 local function checkIfTarget()
     for _, v in pairs(ballsFolder:GetChildren()) do
-        if v:IsA("Part") and v.BrickColor == BrickColor.new("Really red") then 
-            print("Ball is targetting player.")
+        if v:IsA("Part") and v.BrickColor == BrickColor.new("Realmente vermelho") then 
+            print("A bola tem como alvo o jogador.")
             return true 
         end 
     end 
@@ -167,11 +167,11 @@ local function checkBallDistance()
     local charVel = character.PrimaryPart.Velocity
 
     if focusedBall and not focusedBall.Parent then
-        print("Focused ball lost parent. Choosing a new focused ball.")
+        print("A bola focada perdeu o pai. Escolhendo uma nova bola focada.")
         chooseNewFocusedBall()
     end
     if not focusedBall then 
-        print("No focused ball.")
+        print("Sem bola focada.")
         chooseNewFocusedBall()
     end
 
@@ -201,7 +201,7 @@ local function checkBallDistance()
             print(isCooldownInEffect(uigrad1))
             parryButtonPress:Fire()
             if notifyparried == true then
-                notify("Auto Parry", "Automatically Parried Ball", 0.3)
+                notify("Auto Parry", "Bola aparada automaticamente", 0.3)
             end
             task.wait(0.3)
         end
@@ -235,7 +235,7 @@ end)
 
 
 local function startAutoParry()
-    print("Script successfully ran.")
+    print("Script executado com sucesso.")
     
     chooseNewFocusedBall()
     
@@ -268,35 +268,24 @@ local AutoParryToggle = AutoParry:CreateToggle({
 
 
 local AutoRagingDeflect = AutoParry:CreateToggle({
-    Name = "Auto Rage Parry/Rapture Parry (MUST EQUIP PROPER ABILITY)",
+    Name = "Auto Rage Parry/Rapture Parry (DEVE EQUIPAR HABILIDADE ADEQUADA)",
     CurrentValue = false,
     Flag = "AutoRagingDeflectFlag",
     Callback = function(Value)
         if Value then
             startAutoParry()
             UseRage = Value
-            notify("Auto Parry", "Auto Parry with Ability has been started", 1)
+            notify("Auto Parry", "Auto Parry com Ability foi iniciado", 1)
         else
             stopAutoParry()
             UseRage = Value
-            notify("Auto Parry", "Auto Parry with Ability has been disabled", 1)
+            notify("Auto Parry", "Auto Parry com Ability foi desativado", 1)
         end
     end,
 })
 
 
 
-local CloseFighting = AutoParry:CreateSection("Close Fighting")
- local SpamParry = AutoParry:CreateKeybind({
-    Name = "Spam Parry (Hold)",
-    CurrentKeybind = "C",
-    HoldToInteract = true,
-    Flag = "ToggleParrySpam", 
-    Callback = function(Keybind)
-        parryButtonPress:Fire()
-    end,
- })
- 
 
 local Configuration = AutoParry:CreateSection("Configuration")
 
@@ -312,56 +301,10 @@ local DistanceSlider = AutoParry:CreateSlider({
     end,
  })
 
-local ToggleParryOn = AutoParry:CreateKeybind({
-   Name = "Toggle Parry On (Bind)",
-   CurrentKeybind = "One",
-   HoldToInteract = false,
-   Flag = "ToggleParryOn", 
-   Callback = function(Keybind)
-AutoParryToggle:Set(true)
-
-   end
-})
 
 
 
-local ToggleParryOff = AutoParry:CreateKeybind({
-   Name = "Toggle Parry Off (Bind)",
-   CurrentKeybind = "Two",
-   HoldToInteract = false,
-   Flag = "ToggleParryOff",
-   Callback = function(Keybind)
-   AutoParryToggle:Set(false)
-   end,
-})
-
-local ToggleParryOffPlus = AutoParry:CreateKeybind({
-    Name = "+ 10 range",
-    CurrentKeybind = "X",
-    HoldToInteract = false,
-    Flag = "ToggleParryOffPlus",
-    Callback = function()
-         if sliderValue < 200 then
-             sliderValue = sliderValue + 10
-             DistanceSlider:Set(sliderValue)
-             notify("Range Increased", "New Range: " .. sliderValue)
-         end
-    end,
- })
- 
- local ToggleParryOffMinus = AutoParry:CreateKeybind({
-    Name = "- 10 range",
-    CurrentKeybind = "Z",
-    HoldToInteract = false,
-    Flag = "ToggleParryOffMinus",
-    Callback = function()
-         if sliderValue > 0 then
-             sliderValue = sliderValue - 10
-             DistanceSlider:Set(sliderValue)
-             notify("Range Decreased", "New Range: " .. sliderValue)
-         end
-    end,
- })
+  
 
 local AutoGGToggle = AutoParry:CreateToggle({
     Name = "Auto GG",
@@ -382,14 +325,14 @@ local AutoResponseToggle = AutoParry:CreateToggle({
 })
 
 local notifyparriedthing = AutoParry:CreateButton({
-    Name = "Enable/Disable Notify when parried",
+    Name = "Ativar/desativar notificação quando aparado",
     Callback = function()
         if not notifyparried == true then
             notifyparried = true
-            notify("Auto Parry", "Auto Parry Notify when parried has been enabled", 0.7)
+            notify("Auto Parry", "Auto Parry Notificar quando o parried foi ativado", 0.7)
         else
             notifyparried = false
-            notify("Auto Parry", "Auto Parry Notify when parried has been disabled", 0.7)
+            notify("Auto Parry", "Auto Parry Notificar quando o parried for desativado", 0.7)
         end
     end,
  })
